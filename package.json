@@ -45,11 +45,11 @@
 		"plugin-error": "^1.0.1"
 	},
 	"devDependencies": {
-		"@shinnn/eslint-config-node": "^5.0.0",
+		"@shinnn/eslint-config": "^7.0.0",
 		"acorn": "^6.0.0",
-		"babel-eslint": "^8.2.5",
+		"babel-eslint": "^10.1.0",
 		"from2-string": "^1.1.0",
-		"gulp": "^4.0.0",
+		"gulp": "^4.0.2",
 		"mocha": "^8.0.1",
 		"should": "^13.2.1",
 		"vinyl": "^2.2.0"
