@@ -47,15 +47,12 @@
 	},
 	"devDependencies": {
 		"@shinnn/eslint-config-node": "^5.0.0",
+		"acorn": "^6.0.0",
 		"babel-eslint": "^8.2.5",
 		"from2-string": "^1.1.0",
 		"gulp": "^4.0.0",
-		"istanbul": "^0.4.5",
 		"mocha": "^8.0.1",
 		"should": "^13.2.1",
 		"vinyl": "^2.2.0"
-	},
-	"peerDependencies": {
-		"acorn": "^6.0.0"
 	}
 }
