@@ -15,8 +15,7 @@
 		"pretest": "gulp",
 		"test": "mocha",
 		"gulp": "gulp",
-		"gulp-example": "gulp --gulpfile=example/config.js",
-		"coverage": "istanbul cover _mocha"
+		"gulp-example": "gulp --gulpfile=example/config.js"
 	},
 	"keywords": [
 		"gulpplugin",
