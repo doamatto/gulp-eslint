@@ -37,7 +37,7 @@ function gulpEslint(options) {
 
 		if (file.isStream()) {
 			cb(new PluginError('gulp-eslint',
-				'gulp-eslint doesn\'t support vinyl files with Stream contents.'));
+				`gulp-eslint doesn't support vinyl files with Stream contents.`));
 			return;
 		}
 
