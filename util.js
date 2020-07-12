@@ -34,15 +34,24 @@ exports.transform = function(transform, flush) {
  * @param {Object} file - file with a "path" property
  * @returns {Object} An ESLint report with an ignore warning
  */
+
 exports.createIgnoreResult = file => {
+	console.log(file.path);
+	const patt = /node_modules\//; // RegEx for Linux and macOS
+	const patt2 = /node_modules\\/; // Regex for Windows
+	let str;
+	if (patt.test(file.path) || patt2.test(file.path)) {
+		str = 'File ignored because it has a node_modules/** path';
+	} else {
+		str = 'File ignored because of .eslintignore file';
+	}
+	console.log(str);
 	return {
 		filePath: file.path,
 		messages: [{
 			fatal: false,
 			severity: 1,
-			message: file.path.includes('node_modules/') ?
-				'File ignored because it has a node_modules/** path' :
-				'File ignored because of .eslintignore file'
+			message: str
 		}],
 		errorCount: 0,
 		warningCount: 1
