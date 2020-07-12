@@ -127,8 +127,7 @@ describe('gulp-eslint plugin', () => {
 				err.plugin.should.equal('gulp-eslint');
 				// Remove stack trace from error message as it's machine-dependent
 				const message = err.message.split('\n')[0];
-				message.should.equal(`Failed to load plugin '${pluginName}' declared in
-					'CLIOptions': Cannot find module 'eslint-plugin-${pluginName}'`);
+				message.should.equal(`Failed to load plugin '${pluginName}' declared in 'CLIOptions': Cannot find module 'eslint-plugin-${pluginName}'`);
 				done();
 			})
 			.end(new File({
