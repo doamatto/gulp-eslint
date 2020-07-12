@@ -83,7 +83,6 @@ describe('utility methods', () => {
 			result.warningCount.should.equal(1);
 			result.messages.should.be.instanceof(Array).and.have.lengthOf(1);
 			result.messages[0].message.should.equal('File ignored because of .eslintignore file');
-
 		});
 
 		it('should create a warning for paths that include "node_modules"', () => {
@@ -100,7 +99,6 @@ describe('utility methods', () => {
 			result.messages[0].message.should.equal(
 				'File ignored because it has a node_modules/** path'
 			);
-
 		});
 
 	});
