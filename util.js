@@ -130,21 +130,41 @@ exports.firstResultMessage = (result, condition) => {
 };
 
 /**
+ * Get the severity level of a message
+ *
+ * @param {Object} message - an ESLint message
+ * @returns {Number} the severity level of the message
+ */
+function getSeverity(message) {
+	const level = message.fatal ? 2 : message.severity;
+	if (Array.isArray(level)) {
+		return level[0];
+	}
+
+	return level;
+}
+
+/**
  * Determine if a message is an error
  *
  * @param {Object} message - an ESLint message
  * @returns {Boolean} whether the message is an error message
  */
 function isErrorMessage(message) {
-	const level = message.fatal ? 2 : message.severity;
-
-	if (Array.isArray(level)) {
-		return level[0] > 1;
-	}
-
-	return level > 1;
+	return getSeverity(message) > 1;
 }
 exports.isErrorMessage = isErrorMessage;
+
+/**
+ * Determine if a message is a warning or error
+ *
+ * @param {Object} message - an ESLint message
+ * @returns {Boolean} whether the message is a warning or error message
+ */
+function isWarningMessage(message) {
+	return getSeverity(message) > 0;
+}
+exports.isWarningMessage = isWarningMessage;
 
 /**
  * Increment count if message is an error

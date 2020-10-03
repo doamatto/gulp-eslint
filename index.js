@@ -8,6 +8,7 @@ const {
 	firstResultMessage,
 	handleCallback,
 	isErrorMessage,
+	isWarningMessage,
 	migrateOptions,
 	resolveFormatter,
 	resolveWritable,
@@ -169,6 +170,46 @@ gulpEslint.failAfterError = () => {
 		throw new PluginError('gulp-eslint', {
 			name: 'ESLintError',
 			message: 'Failed with ' + count + (count === 1 ? ' error' : ' errors')
+		});
+	});
+};
+
+/**
+ * Fail when an ESLint warning is found in ESLint results.
+ *
+ * @returns {stream} gulp file stream
+ */
+gulpEslint.failOnWarning = () => {
+	return gulpEslint.result(result => {
+		const warning = firstResultMessage(result, isWarningMessage);
+		if (!warning) {
+			return;
+		}
+
+		throw new PluginError('gulp-eslint', {
+			name: 'ESLintWarning',
+			fileName: result.filePath,
+			message: warning.message,
+			lineNumber: warning.line
+		});
+	});
+};
+
+/**
+ * Fail when the stream ends if any ESLint warning(s) occurred
+ *
+ * @returns {stream} gulp file stream
+ */
+gulpEslint.failAfterWarning = () => {
+	return gulpEslint.results(results => {
+		const count = results.warningCount + results.errorCount;
+		if (!count) {
+			return;
+		}
+
+		throw new PluginError('gulp-eslint', {
+			name: 'ESLintWarning',
+			message: 'Failed with ' + count + (count === 1 ? ' warning' : ' warnings')
 		});
 	});
 };

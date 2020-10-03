@@ -134,6 +134,29 @@ describe('utility methods', () => {
 
 	});
 
+	describe('isWarningMessage', () => {
+
+		it('should determine severity a "fatal" message flag', () => {
+			const warningMessage = {
+				fatal: true,
+				severity: 0
+			};
+			const isError = util.isWarningMessage(warningMessage);
+			isError.should.equal(true);
+
+		});
+
+		it('should determine severity from an config array', () => {
+			const warningMessage = {
+				severity: [1, 0]
+			};
+			const isError = util.isWarningMessage(warningMessage);
+			isError.should.equal(true);
+
+		});
+
+	});
+
 	describe('filterResult', () => {
 
 		const result = {
