@@ -50,7 +50,7 @@
 		"babel-eslint": "10.1.0",
 		"from2-string": "1.1.0",
 		"gulp": "4.0.2",
-		"mocha": "8.2.0",
+		"mocha": "8.2.1",
 		"should": "13.2.3",
 		"vinyl": "2.2.1"
 	}
