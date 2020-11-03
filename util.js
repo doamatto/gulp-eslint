@@ -57,20 +57,81 @@ exports.createIgnoreResult = file => {
 };
 
 /**
+ * Convert a string array to a boolean map.
+ * @param {string[]|null} keys The keys to assign true.
+ * @param {boolean} defaultValue The default value for each property.
+ * @param {string} displayName The property name which is used in error message.
+ * @returns {Record<string,boolean>} The boolean map.
+ */
+function toBooleanMap(keys, defaultValue, displayName) {
+	if (keys && !Array.isArray(keys)) {
+		throw Error(`${displayName} must be an array.`);
+	}
+	if (keys && keys.length > 0) {
+		return keys.reduce((map, def) => {
+			const [key, value] = def.split(':');
+
+			if (key !== '__proto__') {
+				map[key] = value === undefined ? defaultValue : value === 'true';
+			}
+
+			return map;
+		}, { });
+	}
+}
+
+/**
  * Create config helper to merge various config sources
  *
  * @param {Object} options - options to migrate
  * @returns {Object} migrated options
  */
-exports.migrateOptions = function migrateOptions(options) {
+exports.migrateOptions = function migrateOptions(options = {}) {
 	if (typeof options === 'string') {
 		// basic config path overload: gulpEslint('path/to/config.json')
-		options = {
-			configFile: options
-		};
+		const returnValue = { eslintOptions: { overrideConfigFile: options } };
+		return returnValue;
+	}
+	const {
+		overrideConfig: originalOverrideConfig,
+		quiet,
+		warnFileIgnored,
+		warnIgnored: originalWarnIgnored,
+		...eslintOptions
+	}	= options;
+	if (originalOverrideConfig != null && typeof originalOverrideConfig !== 'object') {
+		throw Error('\'overrideConfig\' must be an object or null.');
+	}
+	const overrideConfig = eslintOptions.overrideConfig
+	= originalOverrideConfig != null ? { ...originalOverrideConfig } : { };
+
+	function migrateOption(oldName, newName = oldName, convert = value => value) {
+		const value = eslintOptions[oldName];
+		delete eslintOptions[oldName];
+		if (value !== undefined) {
+			overrideConfig[newName] = convert(value);
+		}
 	}
 
-	return options;
+	{
+		const { configFile } = eslintOptions;
+		delete eslintOptions.configFile;
+		if (configFile !== undefined) {
+			eslintOptions.overrideConfigFile = configFile;
+		}
+	}
+	migrateOption('envs', 'env', envs => toBooleanMap(envs, true, 'envs'));
+	migrateOption('globals', undefined, globals => toBooleanMap(globals, false, 'globals'));
+	migrateOption('ignorePattern', 'ignorePatterns');
+	migrateOption('parser');
+	migrateOption('parserOptions');
+	if (Array.isArray(eslintOptions.plugins)) {
+		migrateOption('plugins');
+	}
+	migrateOption('rules');
+	const warnIgnored = warnFileIgnored !== undefined ? warnFileIgnored : originalWarnIgnored;
+	const returnValue = { eslintOptions, quiet, warnIgnored };
+	return returnValue;
 };
 
 /**
@@ -251,7 +312,7 @@ exports.resolveFormatter = (formatter) => {
 	// use ESLint to look up formatter references
 	if (typeof formatter !== 'function') {
 		// load formatter (module, relative to cwd, ESLint formatter)
-		formatter =	CLIEngine.getFormatter(formatter) || formatter;
+		formatter =	CLIEngine.getFormatter(formatter);
 	}
 
 	return formatter;
