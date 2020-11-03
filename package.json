@@ -1,6 +1,6 @@
 {
 	"name": "gulp-eslint",
-	"version": "6.2.0",
+	"version": "6.2.1",
 	"description": "A Gulp plugin for implementing ESLint.",
 	"repository": "FlagAnalytics/gulp-eslint",
 	"files": [
@@ -13,7 +13,7 @@
 	},
 	"scripts": {
 		"build": "yarn && gulp",
-		"test": "mocha --check-leaks",
+		"test": "mocha --check-leaks"
 	},
 	"keywords": [
 		"gulpplugin",
