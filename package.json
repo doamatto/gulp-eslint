@@ -1,6 +1,6 @@
 {
 	"name": "@doamatto/gulp-eslint",
-	"version": "6.2.4",
+	"version": "6.2.5",
 	"description": "A Gulp plugin for implementing ESLint.",
 	"repository": "https://github.com/doamatto/gulp-eslint",
 	"files": [
