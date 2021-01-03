@@ -4,7 +4,12 @@
 
 ## Installation
 
-Using `npm` or `yarn`, install the package `https://github.com/flaganalytics/gulp-eslint` (either using `npm i` or `yarn add`
+```sh
+
+yarn add -D @doamatto/gulp-eslint
+
+npm install --dev @doamatto/gulp-eslint
+```
 
 ## Usage
 
