@@ -12,8 +12,7 @@
 		"test": "test"
 	},
 	"scripts": {
-		"build": "yarn && gulp",
-		"test": "mocha --check-leaks"
+		"build": "yarn && tsc && gulp"
 	},
 	"keywords": [
 		"gulpplugin",
