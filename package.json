@@ -3,9 +3,10 @@
 	"version": "6.2.5",
 	"description": "A Gulp plugin for implementing ESLint.",
 	"repository": "https://github.com/doamatto/gulp-eslint",
+	"main": "lib/index.js",
+	"types": "lib/index.d.ts",
 	"files": [
-		"index.js",
-		"util.js"
+		"lib/**/*"
 	],
 	"scripts": {
 		"build": "tsc && gulp",
