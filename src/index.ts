@@ -1,6 +1,6 @@
 'use strict';
 
-import PluginError from 'plugin-error'
+import PluginError = require("../node_modules/plugin-error")
 import {CLIEngine} from 'eslint'
 import {
 	createIgnoreResult,

@@ -1,14 +1,9 @@
 'use strict';
 
 import {Transform} from 'stream'
-import PluginError from 'plugin-error'
-import fancylog from 'fancy-log'
+import PluginError = require("../node_modules/plugin-error")
+import fancyLog from 'fancy-log'
 import {CLIEngine} from 'eslint'
-
-const {Transform} = require('stream');
-const PluginError = require('plugin-error');
-const fancyLog = require('fancy-log');
-const {CLIEngine} = require('eslint');
 
 /**
  * Convenience method for creating a transform stream in object mode
@@ -216,10 +211,9 @@ function getSeverity(message) {
  * @param {Object} message - an ESLint message
  * @returns {Boolean} whether the message is an error message
  */
-function isErrorMessage(message) {
+export function isErrorMessage(message) {
 	return getSeverity(message) > 1;
 }
-exports.isErrorMessage = isErrorMessage;
 
 /**
  * Determine if a message is a warning or error
@@ -227,10 +221,9 @@ exports.isErrorMessage = isErrorMessage;
  * @param {Object} message - an ESLint message
  * @returns {Boolean} whether the message is a warning or error message
  */
-function isWarningMessage(message) {
+export function isWarningMessage(message) {
 	return getSeverity(message) > 0;
 }
-exports.isWarningMessage = isWarningMessage;
 
 /**
  * Increment count if message is an error
