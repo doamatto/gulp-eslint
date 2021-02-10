@@ -1,5 +1,10 @@
 'use strict';
 
+import {Transform} from 'stream'
+import PluginError from 'plugin-error'
+import fancylog from 'fancy-log'
+import {CLIEngine} from 'eslint'
+
 const {Transform} = require('stream');
 const PluginError = require('plugin-error');
 const fancyLog = require('fancy-log');

@@ -1,8 +1,8 @@
 'use strict';
 
-const PluginError = require('plugin-error');
-const {CLIEngine} = require('eslint');
-const {
+import PluginError from 'plugin-error'
+import {CLIEngine} from 'eslint'
+import {
 	createIgnoreResult,
 	filterResult,
 	firstResultMessage,
@@ -15,8 +15,8 @@ const {
 	transform,
 	tryResultAction,
 	writeResults
-} = require('./util');
-const {relative} = require('path');
+} from './util'
+import {relative} from 'path'
 
 /**
  * Append ESLint result to each file
