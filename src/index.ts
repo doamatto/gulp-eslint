@@ -1,7 +1,7 @@
 'use strict';
 import PluginError = require("../node_modules/plugin-error");
 import { CLIEngine } from 'eslint';
-// @ts-expect-error ts-migrate(2305) FIXME: Module '"./util"' has no exported member 'createIg... Remove this comment to see the full error message
+
 import { createIgnoreResult, filterResult, firstResultMessage, handleCallback, isErrorMessage, isWarningMessage, migrateOptions, resolveFormatter, resolveWritable, transform, tryResultAction, writeResults } from './util';
 import { relative } from 'path';
 /**
@@ -10,11 +10,11 @@ import { relative } from 'path';
  * @param {(Object|String)} [options] - Configure rules, env, global, and other options for running ESLint
  * @returns {stream} gulp file stream
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'options' implicitly has an 'any' type.
+
 function gulpEslint(options) {
     options = migrateOptions(options) || {};
     const linter = new CLIEngine(options);
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'file' implicitly has an 'any' type.
+
     return transform((file, enc, cb) => {
         const filePath = relative(file.cwd, file.path);
         if (file.isNull()) {
@@ -70,12 +70,10 @@ function gulpEslint(options) {
  * @param {Function} action - A function to handle each ESLint result
  * @returns {stream} gulp file stream
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'action' implicitly has an 'any' type.
 gulpEslint.result = action => {
     if (typeof action !== 'function') {
         throw new Error('Expected callable argument');
     }
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'file' implicitly has an 'any' type.
     return transform((file, enc, done) => {
         if (file.eslint) {
             tryResultAction(action, file.eslint, handleCallback(done, file));
@@ -91,31 +89,21 @@ gulpEslint.result = action => {
  * @param {Function} action - A function to handle all ESLint results
  * @returns {stream} gulp file stream
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'action' implicitly has an 'any' type.
 gulpEslint.results = function (action) {
     if (typeof action !== 'function') {
         throw new Error('Expected callable argument');
     }
-    // @ts-expect-error ts-migrate(7034) FIXME: Variable 'results' implicitly has type 'any[]' in ... Remove this comment to see the full error message
     const results = [];
-    // @ts-expect-error ts-migrate(7005) FIXME: Variable 'results' implicitly has an 'any[]' type.
     (results as any).errorCount = 0;
-    // @ts-expect-error ts-migrate(7005) FIXME: Variable 'results' implicitly has an 'any[]' type.
     (results as any).warningCount = 0;
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'file' implicitly has an 'any' type.
     return transform((file, enc, done) => {
         if (file.eslint) {
             results.push(file.eslint);
-            // collect total error/warning count
-            // @ts-expect-error ts-migrate(7005) FIXME: Variable 'results' implicitly has an 'any[]' type.
             (results as any).errorCount += file.eslint.errorCount;
-            // @ts-expect-error ts-migrate(7005) FIXME: Variable 'results' implicitly has an 'any[]' type.
             (results as any).warningCount += file.eslint.warningCount;
         }
         done(null, file);
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'done' implicitly has an 'any' type.
     }, done => {
-        // @ts-expect-error ts-migrate(7005) FIXME: Variable 'results' implicitly has an 'any[]' type.
         tryResultAction(action, results, handleCallback(done));
     });
 };
@@ -125,7 +113,6 @@ gulpEslint.results = function (action) {
  * @returns {stream} gulp file stream
  */
 gulpEslint.failOnError = () => {
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'result' implicitly has an 'any' type.
     return gulpEslint.result(result => {
         const error = firstResultMessage(result, isErrorMessage);
         if (!error) {
@@ -145,7 +132,6 @@ gulpEslint.failOnError = () => {
  * @returns {stream} gulp file stream
  */
 gulpEslint.failAfterError = () => {
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'results' implicitly has an 'any' type.
     return gulpEslint.results(results => {
         const count = results.errorCount;
         if (!count) {
@@ -163,7 +149,6 @@ gulpEslint.failAfterError = () => {
  * @returns {stream} gulp file stream
  */
 gulpEslint.failOnWarning = () => {
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'result' implicitly has an 'any' type.
     return gulpEslint.result(result => {
         const warning = firstResultMessage(result, isWarningMessage);
         if (!warning) {
@@ -183,7 +168,6 @@ gulpEslint.failOnWarning = () => {
  * @returns {stream} gulp file stream
  */
 gulpEslint.failAfterWarning = () => {
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'results' implicitly has an 'any' type.
     return gulpEslint.results(results => {
         const count = results.warningCount + results.errorCount;
         if (!count) {
@@ -202,11 +186,9 @@ gulpEslint.failAfterWarning = () => {
  * @param {(Function|Stream)} [writable=fancy-log] - A funtion or stream to write the formatted ESLint results.
  * @returns {stream} gulp file stream
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'formatter' implicitly has an 'any' type... Remove this comment to see the full error message
 gulpEslint.formatEach = (formatter, writable) => {
     formatter = resolveFormatter(formatter);
     writable = resolveWritable(writable);
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'result' implicitly has an 'any' type.
     return gulpEslint.result(result => writeResults([result], formatter, writable));
 };
 /**
@@ -216,11 +198,9 @@ gulpEslint.formatEach = (formatter, writable) => {
  * @param {(Function|stream)} [writable=fancy-log] - A funtion or stream to write the formatted ESLint results.
  * @returns {stream} gulp file stream
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'formatter' implicitly has an 'any' type... Remove this comment to see the full error message
 gulpEslint.format = (formatter, writable) => {
     formatter = resolveFormatter(formatter);
     writable = resolveWritable(writable);
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'results' implicitly has an 'any' type.
     return gulpEslint.results(results => {
         // Only format results if files has been lint'd
         if (results.length) {

@@ -1,7 +1,6 @@
 'use strict';
 import { Transform } from 'stream';
 import PluginError = require("../node_modules/plugin-error");
-// @ts-expect-error ts-migrate(1259) FIXME: Module '"/home/doamatto/Documents/git/doamatto/gul... Remove this comment to see the full error message
 import fancyLog from 'fancy-log';
 import { CLIEngine } from 'eslint';
 /**
@@ -31,7 +30,6 @@ exports.transform = function (transform: any, flush: any) {
  * @param {Object} file - file with a "path" property
  * @returns {Object} An ESLint report with an ignore warning
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'file' implicitly has an 'any' type.
 exports.createIgnoreResult = file => {
     const patt = /node_modules\//; // RegEx for Linux and macOS
     const patt2 = /node_modules\\/; // Regex for Windows
@@ -60,13 +58,11 @@ exports.createIgnoreResult = file => {
  * @param {string} displayName The property name which is used in error message.
  * @returns {Record<string,boolean>} The boolean map.
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'keys' implicitly has an 'any' type.
 function toBooleanMap(keys, defaultValue, displayName) {
     if (keys && !Array.isArray(keys)) {
         throw Error(`${displayName} must be an array.`);
     }
     if (keys && keys.length > 0) {
-        // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'map' implicitly has an 'any' type.
         return keys.reduce((map, def) => {
             const [key, value] = def.split(':');
             if (key !== '__proto__') {
@@ -88,25 +84,20 @@ exports.migrateOptions = function migrateOptions(options = {}) {
         const returnValue = { eslintOptions: { overrideConfigFile: options } };
         return returnValue;
     }
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'overrideConfig' does not exist on type '... Remove this comment to see the full error message
     const { overrideConfig: originalOverrideConfig, quiet, warnFileIgnored, warnIgnored: originalWarnIgnored, ...eslintOptions } = options;
     if (originalOverrideConfig != null && typeof originalOverrideConfig !== 'object') {
         throw Error('\'overrideConfig\' must be an object or null.');
     }
     const overrideConfig = (eslintOptions as any).overrideConfig
         = originalOverrideConfig != null ? { ...originalOverrideConfig } : {};
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'oldName' implicitly has an 'any' type.
     function migrateOption(oldName, newName = oldName, convert = value => value) {
-        // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         const value = eslintOptions[oldName];
-        // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         delete eslintOptions[oldName];
         if (value !== undefined) {
             overrideConfig[newName] = convert(value);
         }
     }
     {
-        // @ts-expect-error ts-migrate(2339) FIXME: Property 'configFile' does not exist on type '{}'.
         const { configFile } = eslintOptions;
         delete (eslintOptions as any).configFile;
         if (configFile !== undefined) {
@@ -133,9 +124,7 @@ exports.migrateOptions = function migrateOptions(options = {}) {
  * @param {Object} [value=] - A value to pass to the callback
  * @returns {Function} A callback to call(back) the callback
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'callback' implicitly has an 'any' type.
 exports.handleCallback = (callback, value) => {
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'err' implicitly has an 'any' type.
     return err => {
         if (err != null && !(err instanceof PluginError)) {
             err = new PluginError(err.plugin || 'gulp-eslint', err, {
@@ -152,12 +141,10 @@ exports.handleCallback = (callback, value) => {
  * @param {(Object|Array)} result - An ESLint result or result list
  * @param {Function} done - An callback for when the action is complete
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'action' implicitly has an 'any' type.
 exports.tryResultAction = function (action, result, done) {
     try {
         if (action.length > 1) {
             // async action
-            // @ts-expect-error ts-migrate(2693) FIXME: 'any' only refers to a type, but is being used as ... Remove this comment to see the full error message
             action: any.call(this, result, done);
         }
         else {
@@ -177,7 +164,6 @@ exports.tryResultAction = function (action, result, done) {
  * @param {Function} condition - A condition function that is passed a message and returns a boolean
  * @returns {Object} The first message to pass the condition or null
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'result' implicitly has an 'any' type.
 exports.firstResultMessage = (result, condition) => {
     if (!result.messages) {
         return null;
@@ -190,7 +176,6 @@ exports.firstResultMessage = (result, condition) => {
  * @param {Object} message - an ESLint message
  * @returns {Number} the severity level of the message
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'message' implicitly has an 'any' type.
 function getSeverity(message) {
     const level = message.fatal ? 2 : message.severity;
     if (Array.isArray(level)) {
@@ -204,7 +189,6 @@ function getSeverity(message) {
  * @param {Object} message - an ESLint message
  * @returns {Boolean} whether the message is an error message
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'message' implicitly has an 'any' type.
 export function isErrorMessage(message) {
     return getSeverity(message) > 1;
 }
@@ -214,7 +198,6 @@ export function isErrorMessage(message) {
  * @param {Object} message - an ESLint message
  * @returns {Boolean} whether the message is a warning or error message
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'message' implicitly has an 'any' type.
 export function isWarningMessage(message) {
     return getSeverity(message) > 0;
 }
@@ -225,7 +208,6 @@ export function isWarningMessage(message) {
  * @param {Object} message - an ESLint message
  * @returns {Number} The number of errors, message included
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'count' implicitly has an 'any' type.
 function countErrorMessage(count, message) {
     return count + Number(isErrorMessage(message));
 }
@@ -236,7 +218,6 @@ function countErrorMessage(count, message) {
  * @param {Object} message - an ESLint message
  * @returns {Number} The number of warnings, message included
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'count' implicitly has an 'any' type.
 function countWarningMessage(count, message) {
     return count + Number(message.severity === 1);
 }
@@ -247,7 +228,6 @@ function countWarningMessage(count, message) {
  * @param {Object} message - an ESLint message
  * @returns {Number} The number of errors, message included
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'count' implicitly has an 'any' type.
 function countFixableErrorMessage(count, message) {
     return count + Number(isErrorMessage(message) && message.fix !== undefined);
 }
@@ -258,7 +238,6 @@ function countFixableErrorMessage(count, message) {
  * @param {Object} message - an ESLint message
  * @returns {Number} The number of errors, message included
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'count' implicitly has an 'any' type.
 function countFixableWarningMessage(count, message) {
     return count + Number(message.severity === 1 && message.fix !== undefined);
 }
@@ -269,7 +248,6 @@ function countFixableWarningMessage(count, message) {
  * @param {Function} [filter=isErrorMessage] - A function that evaluates what messages to keep
  * @returns {Object} A filtered ESLint result
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'result' implicitly has an 'any' type.
 exports.filterResult = (result, filter) => {
     if (typeof filter !== 'function') {
         filter = isErrorMessage;
@@ -298,7 +276,6 @@ exports.filterResult = (result, filter) => {
  * @param {(String|Function)} [formatter=stylish] - A name to resolve as a formatter. If a function is provided, the same function is returned.
  * @returns {Function} An ESLint formatter
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'formatter' implicitly has an 'any' type... Remove this comment to see the full error message
 exports.resolveFormatter = (formatter) => {
     // use ESLint to look up formatter references
     if (typeof formatter !== 'function') {
@@ -313,7 +290,6 @@ exports.resolveFormatter = (formatter) => {
  * @param {(Function|stream)} [writable=fancyLog] - A stream or function to resolve as a format writer
  * @returns {Function} A function that writes formatted messages
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'writable' implicitly has an 'any' type.
 exports.resolveWritable = (writable) => {
     if (!writable) {
         writable = fancyLog;
@@ -330,12 +306,10 @@ exports.resolveWritable = (writable) => {
  * @param {Function} formatter - A function used to format ESLint results
  * @param {Function} writable - A function used to write formatted ESLint results
  */
-// @ts-expect-error ts-migrate(7006) FIXME: Parameter 'results' implicitly has an 'any' type.
 exports.writeResults = (results, formatter, writable) => {
     if (!results) {
         results = [];
     }
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'result' implicitly has an 'any' type.
     const firstResult = results.find(result => result.config);
     const message = formatter(results, firstResult ? firstResult.config : {});
     if (writable && message != null && message !== '') {
