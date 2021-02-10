@@ -12,11 +12,11 @@
 		"build": "tsc && gulp",
 		"format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
 		"lint": "tslint -p tsconfig.json",
-		"prepare" : "yarn build",
-		"preversion" : "yarn run lint",
-		"version" : "yarn run format && git add -A src",
-		"postversion" : "git push && git push --tags",
-		"prepublishOnly" : "yarn test && yarn run lint",
+		"prepare": "yarn build",
+		"preversion": "yarn run lint",
+		"version": "yarn run format && git add -A src",
+		"postversion": "git push && git push --tags",
+		"prepublishOnly": "yarn test && yarn run lint",
 		"test": "jest --config jestconfig.json"
 	},
 	"keywords": [
