@@ -3,6 +3,7 @@ import { Transform } from 'stream';
 import PluginError = require("../node_modules/plugin-error");
 import fancyLog from 'fancy-log';
 import { CLIEngine } from 'eslint';
+
 /**
  * Convenience method for creating a transform stream in object mode
  *
@@ -10,7 +11,7 @@ import { CLIEngine } from 'eslint';
  * @param {Function} [flush] - An async function that is called before closing the stream
  * @returns {stream} A transform stream
  */
-exports.transform = function (transform: any, flush: any) {
+exports.transform = function (transform: any, flush: any): $TSFixMe {
     if (typeof flush === 'function') {
         return new Transform({
             objectMode: true,
@@ -30,7 +31,7 @@ exports.transform = function (transform: any, flush: any) {
  * @param {Object} file - file with a "path" property
  * @returns {Object} An ESLint report with an ignore warning
  */
-exports.createIgnoreResult = file => {
+exports.createIgnoreResult = (file: $TSFixMe): object => {
     const patt = /node_modules\//; // RegEx for Linux and macOS
     const patt2 = /node_modules\\/; // Regex for Windows
     let str;
@@ -58,7 +59,7 @@ exports.createIgnoreResult = file => {
  * @param {string} displayName The property name which is used in error message.
  * @returns {Record<string,boolean>} The boolean map.
  */
-function toBooleanMap(keys, defaultValue, displayName) {
+function toBooleanMap(keys: string[] | null, defaultValue: boolean, displayName: string): Record<string, boolean> {
     if (keys && !Array.isArray(keys)) {
         throw Error(`${displayName} must be an array.`);
     }
@@ -78,7 +79,7 @@ function toBooleanMap(keys, defaultValue, displayName) {
  * @param {Object} options - options to migrate
  * @returns {Object} migrated options
  */
-exports.migrateOptions = function migrateOptions(options = {}) {
+exports.migrateOptions = function migrateOptions(options: $TSFixMe): object {
     if (typeof options === 'string') {
         // basic config path overload: gulpEslint('path/to/config.json')
         const returnValue = { eslintOptions: { overrideConfigFile: options } };
@@ -90,7 +91,7 @@ exports.migrateOptions = function migrateOptions(options = {}) {
     }
     const overrideConfig = (eslintOptions as any).overrideConfig
         = originalOverrideConfig != null ? { ...originalOverrideConfig } : {};
-    function migrateOption(oldName, newName = oldName, convert = value => value) {
+    function migrateOption(oldName: $TSFixMe, newName: $TSFixMe = oldName, convert = (value: $TSFixMe) => value) {
         const value = eslintOptions[oldName];
         delete eslintOptions[oldName];
         if (value !== undefined) {
@@ -124,8 +125,8 @@ exports.migrateOptions = function migrateOptions(options = {}) {
  * @param {Object} [value=] - A value to pass to the callback
  * @returns {Function} A callback to call(back) the callback
  */
-exports.handleCallback = (callback, value) => {
-    return err => {
+exports.handleCallback = (callback: Function, value: object): Function => {
+    return (err: $TSFixMe) => {
         if (err != null && !(err instanceof PluginError)) {
             err = new PluginError(err.plugin || 'gulp-eslint', err, {
                 showStack: (err.showStack !== false)
@@ -141,7 +142,7 @@ exports.handleCallback = (callback, value) => {
  * @param {(Object|Array)} result - An ESLint result or result list
  * @param {Function} done - An callback for when the action is complete
  */
-exports.tryResultAction = function (action, result, done) {
+exports.tryResultAction = function (action: Function, result: (object | Array<any>), done: Function) {
     try {
         if (action.length > 1) {
             // async action
@@ -164,7 +165,7 @@ exports.tryResultAction = function (action, result, done) {
  * @param {Function} condition - A condition function that is passed a message and returns a boolean
  * @returns {Object} The first message to pass the condition or null
  */
-exports.firstResultMessage = (result, condition) => {
+exports.firstResultMessage = (result: $TSFixMe, condition: Function): object | null => {
     if (!result.messages) {
         return null;
     }
@@ -176,7 +177,7 @@ exports.firstResultMessage = (result, condition) => {
  * @param {Object} message - an ESLint message
  * @returns {Number} the severity level of the message
  */
-function getSeverity(message) {
+function getSeverity(message: $TSFixMe): number {
     const level = message.fatal ? 2 : message.severity;
     if (Array.isArray(level)) {
         return level[0];
@@ -189,7 +190,7 @@ function getSeverity(message) {
  * @param {Object} message - an ESLint message
  * @returns {Boolean} whether the message is an error message
  */
-export function isErrorMessage(message) {
+export function isErrorMessage(message: object): boolean {
     return getSeverity(message) > 1;
 }
 /**
@@ -198,7 +199,7 @@ export function isErrorMessage(message) {
  * @param {Object} message - an ESLint message
  * @returns {Boolean} whether the message is a warning or error message
  */
-export function isWarningMessage(message) {
+export function isWarningMessage(message: object): boolean {
     return getSeverity(message) > 0;
 }
 /**
@@ -208,7 +209,7 @@ export function isWarningMessage(message) {
  * @param {Object} message - an ESLint message
  * @returns {Number} The number of errors, message included
  */
-function countErrorMessage(count, message) {
+function countErrorMessage(count: number, message: object): number {
     return count + Number(isErrorMessage(message));
 }
 /**
@@ -218,7 +219,7 @@ function countErrorMessage(count, message) {
  * @param {Object} message - an ESLint message
  * @returns {Number} The number of warnings, message included
  */
-function countWarningMessage(count, message) {
+function countWarningMessage(count: number, message: $TSFixMe): number {
     return count + Number(message.severity === 1);
 }
 /**
@@ -228,7 +229,7 @@ function countWarningMessage(count, message) {
  * @param {Object} message - an ESLint message
  * @returns {Number} The number of errors, message included
  */
-function countFixableErrorMessage(count, message) {
+function countFixableErrorMessage(count: number, message: $TSFixMe): number {
     return count + Number(isErrorMessage(message) && message.fix !== undefined);
 }
 /**
@@ -238,7 +239,7 @@ function countFixableErrorMessage(count, message) {
  * @param {Object} message - an ESLint message
  * @returns {Number} The number of errors, message included
  */
-function countFixableWarningMessage(count, message) {
+function countFixableWarningMessage(count: number, message: $TSFixMe): number {
     return count + Number(message.severity === 1 && message.fix !== undefined);
 }
 /**
@@ -248,7 +249,7 @@ function countFixableWarningMessage(count, message) {
  * @param {Function} [filter=isErrorMessage] - A function that evaluates what messages to keep
  * @returns {Object} A filtered ESLint result
  */
-exports.filterResult = (result, filter) => {
+exports.filterResult = (result: $TSFixMe, filter: Function): object => {
     if (typeof filter !== 'function') {
         filter = isErrorMessage;
     }
@@ -276,7 +277,7 @@ exports.filterResult = (result, filter) => {
  * @param {(String|Function)} [formatter=stylish] - A name to resolve as a formatter. If a function is provided, the same function is returned.
  * @returns {Function} An ESLint formatter
  */
-exports.resolveFormatter = (formatter) => {
+exports.resolveFormatter = (formatter: (string | Function)): Function => {
     // use ESLint to look up formatter references
     if (typeof formatter !== 'function') {
         // load formatter (module, relative to cwd, ESLint formatter)
@@ -290,7 +291,7 @@ exports.resolveFormatter = (formatter) => {
  * @param {(Function|stream)} [writable=fancyLog] - A stream or function to resolve as a format writer
  * @returns {Function} A function that writes formatted messages
  */
-exports.resolveWritable = (writable) => {
+exports.resolveWritable = (writable: (Function | $TSFixMe)): Function => {
     if (!writable) {
         writable = fancyLog;
     }
@@ -306,11 +307,11 @@ exports.resolveWritable = (writable) => {
  * @param {Function} formatter - A function used to format ESLint results
  * @param {Function} writable - A function used to write formatted ESLint results
  */
-exports.writeResults = (results, formatter, writable) => {
+exports.writeResults = (results: $TSFixMe, formatter: Function, writable: Function) => {
     if (!results) {
         results = [];
     }
-    const firstResult = results.find(result => result.config);
+    const firstResult = results.find((result: $TSFixMe) => result.config);
     const message = formatter(results, firstResult ? firstResult.config : {});
     if (writable && message != null && message !== '') {
         writable(message);

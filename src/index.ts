@@ -2,20 +2,33 @@
 import PluginError = require("../node_modules/plugin-error");
 import { CLIEngine } from 'eslint';
 
-import { createIgnoreResult, filterResult, firstResultMessage, handleCallback, isErrorMessage, isWarningMessage, migrateOptions, resolveFormatter, resolveWritable, transform, tryResultAction, writeResults } from './util';
+import {
+    createIgnoreResult,
+    filterResult,
+    firstResultMessage,
+    handleCallback,
+    isErrorMessage,
+    isWarningMessage,
+    migrateOptions,
+    resolveFormatter,
+    resolveWritable,
+    transform,
+    tryResultAction,
+    writeResults
+} from './util';
 import { relative } from 'path';
+
 /**
  * Append ESLint result to each file
  *
  * @param {(Object|String)} [options] - Configure rules, env, global, and other options for running ESLint
  * @returns {stream} gulp file stream
  */
-
-function gulpEslint(options) {
+function gulpEslint(options:$TSFixMe): $TSFixMe {
     options = migrateOptions(options) || {};
     const linter = new CLIEngine(options);
 
-    return transform((file, enc, cb) => {
+    return transform((file: $TSFixMe, enc: $TSFixMe, cb: $TSFixMe) => {
         const filePath = relative(file.cwd, file.path);
         if (file.isNull()) {
             cb(null, file);
@@ -64,17 +77,18 @@ function gulpEslint(options) {
         cb(null, file);
     });
 }
+
 /**
  * Handle each ESLint result as it passes through the stream.
  *
  * @param {Function} action - A function to handle each ESLint result
  * @returns {stream} gulp file stream
  */
-gulpEslint.result = action => {
+gulpEslint.result = (action: Function): $TSFixMe => {
     if (typeof action !== 'function') {
         throw new Error('Expected callable argument');
     }
-    return transform((file, enc, done) => {
+    return transform((file: $TSFixMe, enc: $TSFixMe, done: $TSFixMe) => {
         if (file.eslint) {
             tryResultAction(action, file.eslint, handleCallback(done, file));
         }
@@ -83,37 +97,39 @@ gulpEslint.result = action => {
         }
     });
 };
+
 /**
  * Handle all ESLint results at the end of the stream.
  *
  * @param {Function} action - A function to handle all ESLint results
  * @returns {stream} gulp file stream
  */
-gulpEslint.results = function (action) {
+gulpEslint.results = (action: Function): $TSFixMe => {
     if (typeof action !== 'function') {
         throw new Error('Expected callable argument');
     }
-    const results = [];
+    const results: $TSFixMe = [];
     (results as any).errorCount = 0;
     (results as any).warningCount = 0;
-    return transform((file, enc, done) => {
+    return transform((file: $TSFixMe, enc: $TSFixMe, done: $TSFixMe) => {
         if (file.eslint) {
             results.push(file.eslint);
             (results as any).errorCount += file.eslint.errorCount;
             (results as any).warningCount += file.eslint.warningCount;
         }
         done(null, file);
-    }, done => {
+    }, (done: $TSFixMe) => {
         tryResultAction(action, results, handleCallback(done));
     });
 };
+
 /**
  * Fail when an ESLint error is found in ESLint results.
  *
  * @returns {stream} gulp file stream
  */
-gulpEslint.failOnError = () => {
-    return gulpEslint.result(result => {
+gulpEslint.failOnError = (): $TSFixMe => {
+    return gulpEslint.result((result: $TSFixMe) => {
         const error = firstResultMessage(result, isErrorMessage);
         if (!error) {
             return;
@@ -126,13 +142,14 @@ gulpEslint.failOnError = () => {
         });
     });
 };
+
 /**
  * Fail when the stream ends if any ESLint error(s) occurred
  *
  * @returns {stream} gulp file stream
  */
-gulpEslint.failAfterError = () => {
-    return gulpEslint.results(results => {
+gulpEslint.failAfterError = (): $TSFixMe => {
+    return gulpEslint.results((results: $TSFixMe) => {
         const count = results.errorCount;
         if (!count) {
             return;
@@ -143,13 +160,14 @@ gulpEslint.failAfterError = () => {
         });
     });
 };
+
 /**
  * Fail when an ESLint warning is found in ESLint results.
  *
  * @returns {stream} gulp file stream
  */
-gulpEslint.failOnWarning = () => {
-    return gulpEslint.result(result => {
+gulpEslint.failOnWarning = (): $TSFixMe => {
+    return gulpEslint.result((result: $TSFixMe) => {
         const warning = firstResultMessage(result, isWarningMessage);
         if (!warning) {
             return;
@@ -162,13 +180,14 @@ gulpEslint.failOnWarning = () => {
         });
     });
 };
+
 /**
  * Fail when the stream ends if any ESLint warning(s) occurred
  *
  * @returns {stream} gulp file stream
  */
-gulpEslint.failAfterWarning = () => {
-    return gulpEslint.results(results => {
+gulpEslint.failAfterWarning = (): $TSFixMe => {
+    return gulpEslint.results((results: $TSFixMe) => {
         const count = results.warningCount + results.errorCount;
         if (!count) {
             return;
@@ -179,6 +198,7 @@ gulpEslint.failAfterWarning = () => {
         });
     });
 };
+
 /**
  * Format the results of each file individually.
  *
@@ -186,11 +206,12 @@ gulpEslint.failAfterWarning = () => {
  * @param {(Function|Stream)} [writable=fancy-log] - A funtion or stream to write the formatted ESLint results.
  * @returns {stream} gulp file stream
  */
-gulpEslint.formatEach = (formatter, writable) => {
+gulpEslint.formatEach = (formatter: String | Function, writable: Function | String): $TSFixMe => {
     formatter = resolveFormatter(formatter);
     writable = resolveWritable(writable);
-    return gulpEslint.result(result => writeResults([result], formatter, writable));
+    return gulpEslint.result((result: $TSFixMe) => writeResults([result], formatter, writable));
 };
+
 /**
  * Wait until all files have been linted and format all results at once.
  *
@@ -198,10 +219,10 @@ gulpEslint.formatEach = (formatter, writable) => {
  * @param {(Function|stream)} [writable=fancy-log] - A funtion or stream to write the formatted ESLint results.
  * @returns {stream} gulp file stream
  */
-gulpEslint.format = (formatter, writable) => {
+gulpEslint.format = (formatter: String | Function, writable: Function | $TSFixMe): $TSFixMe => {
     formatter = resolveFormatter(formatter);
     writable = resolveWritable(writable);
-    return gulpEslint.results(results => {
+    return gulpEslint.results((results: $TSFixMe) => {
         // Only format results if files has been lint'd
         if (results.length) {
             writeResults(results, formatter, writable);
