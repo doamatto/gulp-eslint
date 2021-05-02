@@ -296,7 +296,7 @@ export const filterResult = (result: typeof $TSFixMe, filter: Function): object 
  * Resolve formatter from unknown type (accepts string or function)
  *
  * @throws TypeError thrown if unable to resolve the formatter type
- * @param {(String|Function)} [formatter=stylish] - A name to resolve as a formatter. If a function is provided, the same function is returned.
+ * @param {(string|Function)} [formatter=stylish] - A name to resolve as a formatter. If a function is provided, the same function is returned.
  * @returns {Function} An ESLint formatter
  */
 export const resolveFormatter = (formatter: (string | Function)): Function => {
