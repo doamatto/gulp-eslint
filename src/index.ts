@@ -202,11 +202,11 @@ gulpEslint.failAfterWarning = (): typeof $TSFixMe => {
 /**
  * Format the results of each file individually.
  *
- * @param {(String|Function)} [formatter=stylish] - The name or function for a ESLint result formatter
+ * @param {(string|Function)} [formatter=stylish] - The name or function for a ESLint result formatter
  * @param {(Function|Stream)} [writable=fancy-log] - A funtion or stream to write the formatted ESLint results.
  * @returns {stream} gulp file stream
  */
-gulpEslint.formatEach = (formatter: String | Function, writable: Function | String): typeof $TSFixMe => {
+gulpEslint.formatEach = (formatter: string | Function, writable: Function | $TSFixMe): typeof $TSFixMe => {
     formatter = resolveFormatter(formatter);
     writable = resolveWritable(writable);
     return gulpEslint.result((result: typeof $TSFixMe) => writeResults([result], formatter, writable));
