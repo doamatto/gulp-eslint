@@ -129,7 +129,7 @@ export function migrateOptions(options: typeof $TSFixMe): object {
  * @param {Object} [value=] - A value to pass to the callback
  * @returns {Function} A callback to call(back) the callback
  */
-export const handleCallback = (callback: Function, value: object): Function => {
+export const handleCallback = (callback: Function, value?: object): Function => {
     return (err: typeof $TSFixMe) => {
         if (err != null && !(err instanceof PluginError)) {
             err = new PluginError(err.plugin || 'gulp-eslint', err, {
