@@ -24,11 +24,11 @@ import { relative } from 'path';
  * @param {(Object|String)} [options] - Configure rules, env, global, and other options for running ESLint
  * @returns {stream} gulp file stream
  */
-function gulpEslint(options:$TSFixMe): $TSFixMe {
+function gulpEslint(options:typeof $TSFixMe): typeof $TSFixMe {
     options = migrateOptions(options) || {};
     const linter = new CLIEngine(options);
 
-    return transform((file: $TSFixMe, enc: $TSFixMe, cb: $TSFixMe) => {
+    return transform((file: typeof $TSFixMe, enc: typeof $TSFixMe, cb: typeof $TSFixMe) => {
         const filePath = relative(file.cwd, file.path);
         if (file.isNull()) {
             cb(null, file);
@@ -84,11 +84,11 @@ function gulpEslint(options:$TSFixMe): $TSFixMe {
  * @param {Function} action - A function to handle each ESLint result
  * @returns {stream} gulp file stream
  */
-gulpEslint.result = (action: Function): $TSFixMe => {
+gulpEslint.result = (action: Function): typeof $TSFixMe => {
     if (typeof action !== 'function') {
         throw new Error('Expected callable argument');
     }
-    return transform((file: $TSFixMe, enc: $TSFixMe, done: $TSFixMe) => {
+    return transform((file: typeof $TSFixMe, enc: typeof $TSFixMe, done: typeof $TSFixMe) => {
         if (file.eslint) {
             tryResultAction(action, file.eslint, handleCallback(done, file));
         }
@@ -104,21 +104,21 @@ gulpEslint.result = (action: Function): $TSFixMe => {
  * @param {Function} action - A function to handle all ESLint results
  * @returns {stream} gulp file stream
  */
-gulpEslint.results = (action: Function): $TSFixMe => {
+gulpEslint.results = (action: Function): typeof $TSFixMe => {
     if (typeof action !== 'function') {
         throw new Error('Expected callable argument');
     }
-    const results: $TSFixMe = [];
+    const results: typeof $TSFixMe = [];
     (results as any).errorCount = 0;
     (results as any).warningCount = 0;
-    return transform((file: $TSFixMe, enc: $TSFixMe, done: $TSFixMe) => {
+    return transform((file: typeof $TSFixMe, enc: typeof $TSFixMe, done: typeof $TSFixMe) => {
         if (file.eslint) {
             results.push(file.eslint);
             (results as any).errorCount += file.eslint.errorCount;
             (results as any).warningCount += file.eslint.warningCount;
         }
         done(null, file);
-    }, (done: $TSFixMe) => {
+    }, (done: typeof $TSFixMe) => {
         tryResultAction(action, results, handleCallback(done));
     });
 };
@@ -128,8 +128,8 @@ gulpEslint.results = (action: Function): $TSFixMe => {
  *
  * @returns {stream} gulp file stream
  */
-gulpEslint.failOnError = (): $TSFixMe => {
-    return gulpEslint.result((result: $TSFixMe) => {
+gulpEslint.failOnError = (): typeof $TSFixMe => {
+    return gulpEslint.result((result: typeof $TSFixMe) => {
         const error = firstResultMessage(result, isErrorMessage);
         if (!error) {
             return;
@@ -148,8 +148,8 @@ gulpEslint.failOnError = (): $TSFixMe => {
  *
  * @returns {stream} gulp file stream
  */
-gulpEslint.failAfterError = (): $TSFixMe => {
-    return gulpEslint.results((results: $TSFixMe) => {
+gulpEslint.failAfterError = (): typeof $TSFixMe => {
+    return gulpEslint.results((results: typeof $TSFixMe) => {
         const count = results.errorCount;
         if (!count) {
             return;
@@ -166,8 +166,8 @@ gulpEslint.failAfterError = (): $TSFixMe => {
  *
  * @returns {stream} gulp file stream
  */
-gulpEslint.failOnWarning = (): $TSFixMe => {
-    return gulpEslint.result((result: $TSFixMe) => {
+gulpEslint.failOnWarning = (): typeof $TSFixMe => {
+    return gulpEslint.result((result: typeof $TSFixMe) => {
         const warning = firstResultMessage(result, isWarningMessage);
         if (!warning) {
             return;
@@ -186,8 +186,8 @@ gulpEslint.failOnWarning = (): $TSFixMe => {
  *
  * @returns {stream} gulp file stream
  */
-gulpEslint.failAfterWarning = (): $TSFixMe => {
-    return gulpEslint.results((results: $TSFixMe) => {
+gulpEslint.failAfterWarning = (): typeof $TSFixMe => {
+    return gulpEslint.results((results: typeof $TSFixMe) => {
         const count = results.warningCount + results.errorCount;
         if (!count) {
             return;
@@ -206,10 +206,10 @@ gulpEslint.failAfterWarning = (): $TSFixMe => {
  * @param {(Function|Stream)} [writable=fancy-log] - A funtion or stream to write the formatted ESLint results.
  * @returns {stream} gulp file stream
  */
-gulpEslint.formatEach = (formatter: String | Function, writable: Function | String): $TSFixMe => {
+gulpEslint.formatEach = (formatter: String | Function, writable: Function | String): typeof $TSFixMe => {
     formatter = resolveFormatter(formatter);
     writable = resolveWritable(writable);
-    return gulpEslint.result((result: $TSFixMe) => writeResults([result], formatter, writable));
+    return gulpEslint.result((result: typeof $TSFixMe) => writeResults([result], formatter, writable));
 };
 
 /**
@@ -219,10 +219,10 @@ gulpEslint.formatEach = (formatter: String | Function, writable: Function | Stri
  * @param {(Function|stream)} [writable=fancy-log] - A funtion or stream to write the formatted ESLint results.
  * @returns {stream} gulp file stream
  */
-gulpEslint.format = (formatter: String | Function, writable: Function | $TSFixMe): $TSFixMe => {
+gulpEslint.format = (formatter: String | Function, writable: Function | typeof $TSFixMe): typeof $TSFixMe => {
     formatter = resolveFormatter(formatter);
     writable = resolveWritable(writable);
-    return gulpEslint.results((results: $TSFixMe) => {
+    return gulpEslint.results((results: typeof $TSFixMe) => {
         // Only format results if files has been lint'd
         if (results.length) {
             writeResults(results, formatter, writable);
